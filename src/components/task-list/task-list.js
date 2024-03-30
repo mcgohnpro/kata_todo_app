@@ -1,15 +1,25 @@
 import React from 'react'
 
-import Task from './task'
+import Task from '../task'
 import './task-list.css'
 
-class TaskList extends React.PureComponent {
+export default class TaskList extends React.PureComponent {
   render() {
-    return (
-      <ul className="todo-list">
-        <Task />
-      </ul>
-    )
+    // eslint-disable-next-line no-unused-vars
+    const { todoItems, changeTask } = this.props
+    const tasks = todoItems.map((task) => {
+      return (
+        <Task
+          key={task.id}
+          changeTask={(method, value) => {
+            changeTask(method, task.id, value)
+          }}
+          description={task.description}
+          created={task.created}
+          completed={task.completed}
+        />
+      )
+    })
+    return <ul className="todo-list">{tasks}</ul>
   }
 }
-export default TaskList

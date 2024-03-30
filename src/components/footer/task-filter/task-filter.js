@@ -1,6 +1,7 @@
 import React from 'react'
+import './task-filter.css'
 
-class TaskFilter extends React.PureComponent {
+export default class TaskFilter extends React.PureComponent {
   render() {
     return (
       <ul className="filters">
@@ -19,5 +20,3 @@ class TaskFilter extends React.PureComponent {
     )
   }
 }
-
-export default TaskFilter

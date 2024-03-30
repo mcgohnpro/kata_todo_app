@@ -1,10 +1,10 @@
 import React from 'react'
 
-import TaskFilter from '../task-filter'
+import TaskFilter from './task-filter'
 
 import './foooter.css'
 
-class Footer extends React.PureComponent {
+export default class Footer extends React.PureComponent {
   render() {
     return (
       <footer className="footer">
@@ -17,5 +17,3 @@ class Footer extends React.PureComponent {
     )
   }
 }
-
-export default Footer
