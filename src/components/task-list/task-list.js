@@ -1,4 +1,6 @@
 import React from 'react'
+import { forbidExtraProps } from 'airbnb-prop-types'
+import PropTypes from 'prop-types'
 
 import Task from '../task'
 import './task-list.css'
@@ -29,3 +31,9 @@ TaskList.defaultProps = {
   todoItems: [],
   taskHandler: () => {},
 }
+
+TaskList.propTypes = forbidExtraProps({
+  filter: PropTypes.oneOf(['all', 'active', 'completed']),
+  todoItems: PropTypes.arrayOf(PropTypes.objectOf),
+  taskHandler: PropTypes.func,
+})

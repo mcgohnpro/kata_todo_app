@@ -1,4 +1,6 @@
 import React from 'react'
+import { forbidExtraProps } from 'airbnb-prop-types'
+import PropTypes from 'prop-types'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import './task.css'
@@ -55,3 +57,11 @@ Task.defaultProps = {
   changeTask: () => {},
   created: new Date(),
 }
+
+Task.propTypes = forbidExtraProps({
+  filter: PropTypes.oneOf(['all', 'active', 'completed']),
+  description: PropTypes.string,
+  completed: PropTypes.bool,
+  changeTask: PropTypes.func,
+  created: PropTypes.instanceOf(Date),
+})

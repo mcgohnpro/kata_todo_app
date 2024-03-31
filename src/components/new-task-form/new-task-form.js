@@ -1,4 +1,6 @@
 import React from 'react'
+import { forbidExtraProps } from 'airbnb-prop-types'
+import PropTypes from 'prop-types'
 
 import getId from '../../utils'
 
@@ -33,3 +35,7 @@ export default class NewTaskForm extends React.PureComponent {
 NewTaskForm.defaultProps = {
   taskHandler: () => {},
 }
+
+NewTaskForm.propTypes = forbidExtraProps({
+  taskHandler: PropTypes.func,
+})

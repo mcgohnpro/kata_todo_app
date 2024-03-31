@@ -1,5 +1,7 @@
 import React from 'react'
 import './task-filter.css'
+import { forbidExtraProps } from 'airbnb-prop-types'
+import PropTypes from 'prop-types'
 
 export default class TaskFilter extends React.PureComponent {
   render() {
@@ -48,3 +50,8 @@ TaskFilter.defaultProps = {
   filterTasks: () => {},
   filter: 'all',
 }
+
+TaskFilter.propTypes = forbidExtraProps({
+  filterTasks: PropTypes.func,
+  filter: PropTypes.oneOf(['all', 'active', 'completed']),
+})
