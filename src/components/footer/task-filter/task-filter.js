@@ -43,3 +43,8 @@ export default class TaskFilter extends React.PureComponent {
     )
   }
 }
+
+TaskFilter.defaultProps = {
+  filterTasks: () => {},
+  filter: 'all',
+}

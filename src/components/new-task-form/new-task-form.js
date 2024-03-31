@@ -1,10 +1,8 @@
 import React from 'react'
 
-import './new-task-form.css'
+import getId from '../../utils'
 
-function getId() {
-  return `id${Math.floor(Math.random() * 1e8).toString(16)}`
-}
+import './new-task-form.css'
 
 export default class NewTaskForm extends React.PureComponent {
   render() {
@@ -30,4 +28,8 @@ export default class NewTaskForm extends React.PureComponent {
       />
     )
   }
+}
+
+NewTaskForm.defaultProps = {
+  taskHandler: () => {},
 }

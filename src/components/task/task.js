@@ -47,3 +47,11 @@ export default class Task extends React.PureComponent {
     )
   }
 }
+
+Task.defaultProps = {
+  filter: 'all',
+  description: '',
+  completed: false,
+  changeTask: () => {},
+  created: new Date(),
+}

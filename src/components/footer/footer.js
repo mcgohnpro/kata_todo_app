@@ -19,3 +19,9 @@ export default class Footer extends React.PureComponent {
     )
   }
 }
+
+Footer.defaultProps = {
+  count: 0,
+  filterTasks: () => {},
+  filter: 'all',
+}
