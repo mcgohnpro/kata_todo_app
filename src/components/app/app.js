@@ -6,12 +6,13 @@ import Footer from '../footer'
 
 import './app.css'
 
-// `id${Math.floor(Math.random() * 1e8).toString(16)}`
-
 export default class App extends React.PureComponent {
-  constructor() {
-    super()
-    this.changeTask = (method, id, value) => {
+  constructor(props) {
+    super(props)
+    this.filterTasks = (filterValue) => {
+      this.setState({ filter: filterValue })
+    }
+    this.taskHandler = ({ method, id, value }) => {
       this.setState(({ todoItems }) => {
         if (method === 'update') {
           return {
@@ -23,12 +24,25 @@ export default class App extends React.PureComponent {
             todoItems: todoItems.filter((element) => element.id !== id),
           }
         }
+        if (method === 'create') {
+          return {
+            todoItems: [...todoItems, value],
+          }
+        }
         return {
           todoItems,
         }
       })
     }
+    this.removeCompleted = () => {
+      this.setState(({ todoItems }) => {
+        return {
+          todoItems: todoItems.filter((element) => !element.completed),
+        }
+      })
+    }
     this.state = {
+      filter: 'all',
       todoItems: [
         {
           id: 'id42f9ea0',
@@ -53,16 +67,17 @@ export default class App extends React.PureComponent {
   }
 
   render() {
-    const { todoItems } = this.state
+    const { todoItems, filter } = this.state
+    const count = todoItems.filter((el) => !el.completed).length
     return (
       <section className="todoapp">
         <header>
           <h1>todoapp</h1>
-          <NewTaskForm />
+          <NewTaskForm taskHandler={this.taskHandler} />
         </header>
         <section className="main">
-          <TaskList todoItems={todoItems} changeTask={this.changeTask} />
-          <Footer />
+          <TaskList filter={filter} todoItems={todoItems} taskHandler={this.taskHandler} />
+          <Footer count={count} filterTasks={this.filterTasks} filter={filter} removeCompleted={this.removeCompleted} />
         </section>
       </section>
     )

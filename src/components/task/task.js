@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unused-state */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
@@ -7,21 +5,31 @@ import './task.css'
 
 export default class Task extends React.PureComponent {
   render() {
-    const { description, created, completed, changeTask } = this.props
+    const { description, created, completed, changeTask, filter } = this.props
+    let hidden = false
+    if (filter === 'active') {
+      hidden = completed
+    } else if (filter === 'completed') {
+      hidden = !completed
+    }
     return (
-      <li className={completed ? 'completed' : ''}>
+      <li className={completed ? 'completed' : ''} hidden={hidden}>
         <div className="view">
           <input
+            name="task"
             className="toggle"
             checked={!!completed}
             type="checkbox"
             onChange={() => {
-              changeTask('update', { completed: !completed })
+              changeTask({
+                method: 'update',
+                value: { completed: !completed },
+              })
             }}
           />
-          <label>
+          <label htmlFor="task">
             <span className="description">{description}</span>
-            <span className="created">{`created ${formatDistanceToNow(created)}`}</span>
+            <span className="created">{`created ${formatDistanceToNow(created)} ago`}</span>
           </label>
           <button type="button" className="icon icon-edit" aria-label="edit" />
           <button
@@ -29,7 +37,9 @@ export default class Task extends React.PureComponent {
             className="icon icon-destroy"
             aria-label="delete"
             onClick={() => {
-              changeTask('delete')
+              changeTask({
+                method: 'delete',
+              })
             }}
           />
         </div>
