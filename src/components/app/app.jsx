@@ -6,31 +6,30 @@ import Footer from '../footer'
 
 import './app.css'
 
-export default class App extends React.PureComponent {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.filterTasks = (filterValue) => {
       this.setState({ filter: filterValue })
     }
-    this.taskHandler = ({ method, id, value }) => {
+    this.updateTask = (id, value) => {
       this.setState(({ todoItems }) => {
-        if (method === 'update') {
-          return {
-            todoItems: todoItems.map((element) => (element.id === id ? { ...element, ...value } : element)),
-          }
-        }
-        if (method === 'delete') {
-          return {
-            todoItems: todoItems.filter((element) => element.id !== id),
-          }
-        }
-        if (method === 'create') {
-          return {
-            todoItems: [...todoItems, value],
-          }
-        }
         return {
-          todoItems,
+          todoItems: todoItems.map((element) => (element.id === id ? { ...element, ...value } : element)),
+        }
+      })
+    }
+    this.createTask = (newTask) => {
+      this.setState(({ todoItems }) => {
+        return {
+          todoItems: [...todoItems, newTask],
+        }
+      })
+    }
+    this.removeTask = (id) => {
+      this.setState(({ todoItems }) => {
+        return {
+          todoItems: todoItems.filter((element) => element.id !== id),
         }
       })
     }
@@ -73,10 +72,10 @@ export default class App extends React.PureComponent {
       <section className="todoapp">
         <header>
           <h1>todoapp</h1>
-          <NewTaskForm taskHandler={this.taskHandler} />
+          <NewTaskForm createTask={this.createTask} />
         </header>
         <section className="main">
-          <TaskList filter={filter} todoItems={todoItems} taskHandler={this.taskHandler} />
+          <TaskList filter={filter} todoItems={todoItems} removeTask={this.removeTask} updateTask={this.updateTask} />
           <Footer count={count} filterTasks={this.filterTasks} filter={filter} removeCompleted={this.removeCompleted} />
         </section>
       </section>
