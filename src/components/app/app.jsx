@@ -61,6 +61,12 @@ export default class App extends React.Component {
           completed: false,
           created: new Date('2024-03-30 18:03'),
         },
+        {
+          id: 'id384c09b',
+          description: 'Задача 4',
+          completed: false,
+          created: new Date('2024-04-03 21:03'),
+        },
       ],
     }
   }
