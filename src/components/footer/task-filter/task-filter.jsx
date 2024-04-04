@@ -1,5 +1,4 @@
 import './task-filter.css'
-import { forbidExtraProps } from 'airbnb-prop-types'
 import PropTypes from 'prop-types'
 
 export default function TaskFilter(props) {
@@ -48,7 +47,7 @@ TaskFilter.defaultProps = {
   filter: 'all',
 }
 
-TaskFilter.propTypes = forbidExtraProps({
+TaskFilter.propTypes = {
   filterTasks: PropTypes.func,
   filter: PropTypes.oneOf(['all', 'active', 'completed']),
-})
+}

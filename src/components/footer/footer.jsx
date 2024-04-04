@@ -1,4 +1,3 @@
-import { forbidExtraProps, nonNegativeInteger } from 'airbnb-prop-types'
 import PropTypes from 'prop-types'
 
 import TaskFilter from './task-filter'
@@ -26,9 +25,9 @@ Footer.defaultProps = {
   removeCompleted: () => {},
 }
 
-Footer.propTypes = forbidExtraProps({
-  count: nonNegativeInteger,
+Footer.propTypes = {
+  count: PropTypes.number,
   filterTasks: PropTypes.func,
   filter: PropTypes.oneOf(['all', 'active', 'completed']),
   removeCompleted: PropTypes.func,
-})
+}

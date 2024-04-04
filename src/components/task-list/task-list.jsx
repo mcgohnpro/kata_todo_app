@@ -1,4 +1,3 @@
-import { forbidExtraProps } from 'airbnb-prop-types'
 import PropTypes from 'prop-types'
 
 import Task from '../task'
@@ -38,9 +37,9 @@ TaskList.defaultProps = {
   updateTask: () => {},
 }
 
-TaskList.propTypes = forbidExtraProps({
+TaskList.propTypes = {
   filter: PropTypes.oneOf(['all', 'active', 'completed']),
   todoItems: PropTypes.arrayOf(PropTypes.objectOf),
   removeTask: PropTypes.func,
   updateTask: PropTypes.func,
-})
+}

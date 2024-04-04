@@ -1,5 +1,4 @@
 import React from 'react'
-import { forbidExtraProps } from 'airbnb-prop-types'
 import PropTypes from 'prop-types'
 
 import getId from '../../utils'
@@ -49,6 +48,6 @@ NewTaskForm.defaultProps = {
   createTask: () => {},
 }
 
-NewTaskForm.propTypes = forbidExtraProps({
+NewTaskForm.propTypes = {
   createTask: PropTypes.func,
-})
+}
