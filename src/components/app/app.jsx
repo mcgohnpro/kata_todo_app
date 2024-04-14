@@ -1,10 +1,10 @@
 import React from 'react'
 
+import './app.css'
 import TaskList from '../task-list'
 import NewTaskForm from '../new-task-form'
 import Footer from '../footer'
-
-import './app.css'
+import getId from '../../utils'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -44,28 +44,11 @@ export default class App extends React.Component {
       filter: 'all',
       todoItems: [
         {
-          id: 'id42f9ea0',
-          description: 'Задача 1',
+          id: getId(),
+          title: 'Task 1',
           completed: false,
           created: new Date('2024-03-30 22:00'),
-        },
-        {
-          id: 'id59a81f6',
-          description: 'Задача 2',
-          completed: false,
-          created: new Date('2024-03-30 18:02'),
-        },
-        {
-          id: 'id41cdbea',
-          description: 'Задача 3',
-          completed: false,
-          created: new Date('2024-03-30 18:03'),
-        },
-        {
-          id: 'id384c09b',
-          description: 'Задача 4',
-          completed: false,
-          created: new Date('2024-04-03 21:03'),
+          totalSeconds: 30,
         },
       ],
     }

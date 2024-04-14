@@ -8,13 +8,14 @@ export default function TaskList(props) {
 
   return (
     <ul className="todo-list">
-      {todoItems.map(({ id, description, created, completed }) => {
+      {todoItems.map(({ id, title, created, completed, totalSeconds }) => {
         return (
           <Task
             key={id}
             id={id}
+            totalSeconds={totalSeconds}
             filter={filter}
-            description={description}
+            title={title}
             created={created}
             completed={completed}
             removeTask={() => {
