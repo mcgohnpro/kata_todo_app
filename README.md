@@ -1,1 +1,1 @@
-https://kata-todo-app-hazel.vercel.app/
+https://kata-todos-alpha.vercel.app/
