@@ -51,6 +51,10 @@ export default class Task extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timer)
+  }
+
   startTimer() {
     const { turnedOn, inProcessTime } = this.state
     const { completed } = this.props
