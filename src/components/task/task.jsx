@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { differenceInSeconds, formatDistanceToNow, subSeconds } from 'date-fns'
 
@@ -8,139 +8,100 @@ import TaskEditor from './task-editor'
 
 import './task.css'
 
-export default class Task extends React.Component {
-  constructor(props) {
-    super(props)
-    const { updateTask } = props
-    this.state = {
-      turnedOn: false,
-      inProcessTime: 0,
-      editing: false,
-    }
-    this.startTimer = this.startTimer.bind(this)
-    this.updateTimer = this.updateTimer.bind(this)
-    this.pauseTimer = this.pauseTimer.bind(this)
-    this.openTaskEditor = this.openTaskEditor.bind(this)
+export default function Task(props) {
+  const { id, title, created, completed, filter, removeTask, updateTask, totalSeconds } = props
+  const [turnedOn, setTurnedOn] = useState(false)
+  const [inProcessTime, setInProcessTime] = useState(0)
+  const [editing, setEditing] = useState(false)
+  const [startTime, setStartTime] = useState()
 
-    this.confirmTitleChanges = (value) => {
-      updateTask({ title: value })
-      this.setState({
-        editing: false,
-      })
-    }
-
-    this.abortTitleChanges = () => {
-      this.setState(() => {
-        return {
-          editing: false,
-        }
-      })
-    }
+  const confirmTitleChanges = (value) => {
+    updateTask({ title: value })
+    setEditing(false)
   }
 
-  componentDidUpdate(...rest) {
-    const { turnedOn } = this.state
-    const [, prevState] = rest
-    if (!prevState.turnedOn && turnedOn) {
-      this.timer = setInterval(() => {
-        this.updateTimer()
-      }, 1000)
-    }
-    if (prevState.turnedOn && !turnedOn) {
-      clearInterval(this.timer)
-    }
+  const abortTitleChanges = () => {
+    setEditing(false)
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timer)
-  }
-
-  startTimer() {
-    const { turnedOn, inProcessTime } = this.state
-    const { completed } = this.props
+  const startTimer = () => {
     if (!turnedOn && !completed) {
-      this.setState({
-        turnedOn: true,
-        startTime: subSeconds(new Date(), inProcessTime),
-      })
+      setTurnedOn(true)
+      setStartTime(subSeconds(new Date(), inProcessTime))
     }
   }
 
-  updateTimer() {
-    const { startTime, inProcessTime } = this.state
-    const { totalSeconds } = this.props
+  const pauseTimer = () => {
+    setTurnedOn(false)
+  }
+
+  function stopTimer() {
+    setTurnedOn(false)
+    setInProcessTime(0)
+  }
+
+  function updateTimer() {
+    console.log(`totalSeconds ${totalSeconds}  inProcessTime ${inProcessTime}`)
     if (totalSeconds <= inProcessTime) {
-      this.stopTimer()
+      stopTimer()
       return
     }
-    this.setState(() => {
-      return {
-        inProcessTime: differenceInSeconds(new Date(), startTime),
-      }
-    })
+    setInProcessTime(differenceInSeconds(new Date(), startTime))
   }
 
-  pauseTimer() {
-    this.setState({
-      turnedOn: false,
-    })
+  const openTaskEditor = () => {
+    setEditing(true)
   }
 
-  stopTimer() {
-    this.setState({
-      turnedOn: false,
-      inProcessTime: 0,
-    })
-    clearInterval(this.timer)
-  }
+  useEffect(() => {
+    console.log('update')
+    let timer
+    if (turnedOn) {
+      timer = setInterval(() => {
+        updateTimer()
+      }, 1000)
+    } else {
+      clearInterval(timer)
+    }
+    return () => clearInterval(timer)
+  }, [turnedOn])
 
-  openTaskEditor() {
-    this.setState({
-      editing: true,
-    })
-  }
+  if (filter === 'active' && completed) return null
+  if (filter === 'completed' && !completed) return null
 
-  render() {
-    const { id, title, created, completed, filter, removeTask, updateTask, totalSeconds } = this.props
-    const { inProcessTime, editing } = this.state
-    const leftTime = getTimeString(totalSeconds, inProcessTime)
-    if (filter === 'active' && completed) return null
-    if (filter === 'completed' && !completed) return null
-
-    return (
-      <li className={`${completed ? 'completed' : ''}${editing ? ' editing' : ''}`}>
-        <div className="view">
-          <input
-            id={id}
-            className="toggle"
-            checked={completed}
-            type="checkbox"
-            onChange={() => {
-              this.pauseTimer()
-              updateTask({ completed: !completed })
-            }}
-          />
-          <label htmlFor={id}>
-            <span className="title">{title}</span>
-            <span className="description">
-              <button aria-label="start" type="button" className="icon icon-play" onClick={this.startTimer} />
-              <button aria-label="pause" type="button" className="icon icon-pause" onClick={this.pauseTimer} />
-              {leftTime}
-            </span>
-            <span className="description">{`created ${formatDistanceToNow(created)} ago`}</span>
-          </label>
-          <button type="button" className="icon icon-edit" aria-label="edit" onClick={this.openTaskEditor} />
-          <button type="button" className="icon icon-destroy" aria-label="delete" onClick={removeTask} />
-        </div>
-        <TaskEditor
-          title={title}
-          editing={editing}
-          confirmTitleChanges={this.confirmTitleChanges}
-          abortTitleChanges={this.abortTitleChanges}
+  return (
+    <li className={`${completed ? 'completed' : ''}${editing ? ' editing' : ''}`}>
+      <div className="view">
+        <input
+          id={id}
+          className="toggle"
+          checked={completed}
+          type="checkbox"
+          onChange={() => {
+            pauseTimer()
+            updateTask({ completed: !completed })
+          }}
         />
-      </li>
-    )
-  }
+        <label htmlFor={id}>
+          <span className="title">{title}</span>
+          <span className="description">
+            <button aria-label="start" type="button" className="icon icon-play" onClick={startTimer} />
+            <button aria-label="pause" type="button" className="icon icon-pause" onClick={pauseTimer} />
+            {getTimeString(totalSeconds, inProcessTime)}
+          </span>
+          <span className="description">{`created ${formatDistanceToNow(created)} ago`}</span>
+        </label>
+        <button type="button" className="icon icon-edit" aria-label="edit" onClick={openTaskEditor} />
+        <button type="button" className="icon icon-destroy" aria-label="delete" onClick={removeTask} />
+      </div>
+      <TaskEditor
+        title={title}
+        editing={editing}
+        confirmTitleChanges={confirmTitleChanges}
+        abortTitleChanges={abortTitleChanges}
+      />
+    </li>
+  )
 }
 
 Task.defaultProps = {
