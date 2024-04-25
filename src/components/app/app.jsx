@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from 'react'
 
 import './app.css'
 import TaskList from '../task-list'
@@ -6,68 +6,56 @@ import NewTaskForm from '../new-task-form'
 import Footer from '../footer'
 import getId from '../../utils'
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.filterTasks = (filterValue) => {
-      this.setState({ filter: filterValue })
-    }
-    this.updateTask = (id, value) => {
-      this.setState(({ todoItems }) => {
-        return {
-          todoItems: todoItems.map((element) => (element.id === id ? { ...element, ...value } : element)),
-        }
-      })
-    }
-    this.createTask = (newTask) => {
-      this.setState(({ todoItems }) => {
-        return {
-          todoItems: [...todoItems, newTask],
-        }
-      })
-    }
-    this.removeTask = (id) => {
-      this.setState(({ todoItems }) => {
-        return {
-          todoItems: todoItems.filter((element) => element.id !== id),
-        }
-      })
-    }
-    this.removeCompleted = () => {
-      this.setState(({ todoItems }) => {
-        return {
-          todoItems: todoItems.filter((element) => !element.completed),
-        }
-      })
-    }
-    this.state = {
-      filter: 'all',
-      todoItems: [
-        {
-          id: getId(),
-          title: 'Task 1',
-          completed: false,
-          created: new Date('2024-03-30 22:00'),
-          totalSeconds: 7,
-        },
-      ],
-    }
+const initialItems = [
+  {
+    id: getId(),
+    title: 'Task 1',
+    completed: false,
+    created: new Date('2024-03-30 22:00'),
+    totalSeconds: 7,
+  },
+]
+
+export default function App() {
+  const [todoItems, setTodoItems] = useState(initialItems)
+  const [filter, setFilter] = useState('all')
+
+  const filterTasks = (filterValue) => {
+    setFilter(filterValue)
   }
 
-  render() {
-    const { todoItems, filter } = this.state
-    const count = todoItems.filter((el) => !el.completed).length
-    return (
-      <section className="todoapp">
-        <header>
-          <h1>todoapp</h1>
-          <NewTaskForm createTask={this.createTask} />
-        </header>
-        <section className="main">
-          <TaskList filter={filter} todoItems={todoItems} removeTask={this.removeTask} updateTask={this.updateTask} />
-          <Footer count={count} filterTasks={this.filterTasks} filter={filter} removeCompleted={this.removeCompleted} />
-        </section>
-      </section>
-    )
+  const updateTask = (id, value) => {
+    setTodoItems((prev) => {
+      return prev.map((element) => (element.id === id ? { ...element, ...value } : element))
+    })
   }
+  const createTask = (newTask) => {
+    setTodoItems((prev) => {
+      return [...prev, newTask]
+    })
+  }
+  const removeTask = (id) => {
+    setTodoItems((prev) => {
+      return prev.filter((element) => element.id !== id)
+    })
+  }
+  const removeCompleted = () => {
+    setTodoItems((prev) => {
+      return prev.filter((element) => !element.completed)
+    })
+  }
+
+  const count = todoItems.filter((el) => !el.completed).length
+  return (
+    <section className="todoapp">
+      <header>
+        <h1>todoapp</h1>
+        <NewTaskForm createTask={createTask} />
+      </header>
+      <section className="main">
+        <TaskList filter={filter} todoItems={todoItems} removeTask={removeTask} updateTask={updateTask} />
+        <Footer count={count} filterTasks={filterTasks} filter={filter} removeCompleted={removeCompleted} />
+      </section>
+    </section>
+  )
 }
