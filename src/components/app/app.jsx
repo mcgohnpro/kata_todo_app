@@ -48,7 +48,7 @@ export default class App extends React.Component {
           title: 'Task 1',
           completed: false,
           created: new Date('2024-03-30 22:00'),
-          totalSeconds: 20,
+          totalSeconds: 7,
         },
       ],
     }

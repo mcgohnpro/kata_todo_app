@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { differenceInSeconds, formatDistanceToNow, subSeconds } from 'date-fns'
 
@@ -14,6 +14,7 @@ export default function Task(props) {
   const [inProcessTime, setInProcessTime] = useState(0)
   const [editing, setEditing] = useState(false)
   const [startTime, setStartTime] = useState()
+  const timer = useRef()
 
   const confirmTitleChanges = (value) => {
     updateTask({ title: value })
@@ -36,16 +37,12 @@ export default function Task(props) {
   }
 
   function stopTimer() {
+    clearInterval(timer.current)
     setTurnedOn(false)
     setInProcessTime(0)
   }
 
   function updateTimer() {
-    console.log(`totalSeconds ${totalSeconds}  inProcessTime ${inProcessTime}`)
-    if (totalSeconds <= inProcessTime) {
-      stopTimer()
-      return
-    }
     setInProcessTime(differenceInSeconds(new Date(), startTime))
   }
 
@@ -54,17 +51,25 @@ export default function Task(props) {
   }
 
   useEffect(() => {
-    console.log('update')
-    let timer
     if (turnedOn) {
-      timer = setInterval(() => {
+      timer.current = setInterval(() => {
         updateTimer()
       }, 1000)
     } else {
-      clearInterval(timer)
+      clearInterval(timer.current)
     }
-    return () => clearInterval(timer)
+    return () => {
+      if (turnedOn) {
+        clearInterval(timer.current)
+      }
+    }
   }, [turnedOn])
+
+  useEffect(() => {
+    if (totalSeconds <= inProcessTime) {
+      stopTimer()
+    }
+  }, [inProcessTime])
 
   if (filter === 'active' && completed) return null
   if (filter === 'completed' && !completed) return null
